@@ -1,5 +1,12 @@
 import mysql from 'mysql'
 
+/*
+    * TODO: Add the [add, remove, read, update] methods
+    * TODO: Check if there is a way to create a db if it doesn't exist
+    * TODO: Try to do a mini web version using http
+    * TODO: Try to do a mini interface using Electron
+*/
+
 class Database {
     constructor(database_name, table_name) {
         this.databaseName = database_name
