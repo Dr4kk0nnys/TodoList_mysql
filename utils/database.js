@@ -2,7 +2,7 @@ import mysql from 'mysql'
 
 /*
     x TODO: Add the [add, remove, read, update] methods
-    * TODO: Check if there is a way to create a db if it doesn't exist
+    x TODO: Check if there is a way to create a db if it doesn't exist
     * TODO: Try to do a mini web version using http
     * TODO: Try to do a mini interface using Electron
 */
@@ -20,11 +20,6 @@ class Database {
         })
 
         this.connectDatabase()
-
-        // this.readAll()
-        // this.add({ todo: 'This is awesome' })
-        this.read(1)
-        this.read(2)
     }
 
     connectDatabase() {
@@ -36,47 +31,65 @@ class Database {
     }
 
     readAll() {
-        const query = `SELECT * FROM ${this.tableName}`
-        this.database.query(query, (err, res) => {
-            if (err) throw err
+        return new Promise((resolve, reject) => {
+            const query = `SELECT * FROM ${this.tableName}`
+            this.database.query(query, (err, res) => {
+                if (err) return reject(err)
 
-            console.log(res)
+                resolve(res)
+            })
         })
     }
 
     read(id = 1) {
-        const query = `SELECT * FROM ${this.tableName} WHERE id = ${id}`
-        this.database.query(query, (err, res) => {
-            if (err) throw err
+        return new Promise((resolve, reject) => {
+            const query = `SELECT * FROM ${this.tableName} WHERE id = ${id}`
+            this.database.query(query, (err, res) => {
+                if (err) return reject(err)
 
-            console.log(res)
+                resolve(res)
+            })
         })
     }
 
-    add(data) {
-        const query = `INSERT INTO ${this.tableName} SET ?`
-        this.database.query(query, data, (err, res) => {
-            if (err) throw err
+    add(data = { todo: 'Empty object' }) {
+        return new Promise((resolve, reject) => {
+            const query = `INSERT INTO ${this.tableName} SET ?`
+            this.database.query(query, data, (err, res) => {
+                if (err) return reject(err)
 
-            console.log(res)
+                resolve(res)
+            })
         })
     }
 
-    remove(id) {
-        const query = `DELETE FROM ${this.tableName} WHERE id = ${id}`
-        this.database.query(query, (err, res) => {
-            if (err) throw err
+    remove(id = 1) {
+        return new Promise((resolve, reject) => {
+            const query = `DELETE FROM ${this.tableName} WHERE id = ${id}`
+            this.database.query(query, (err, res) => {
+                if (err) return reject(err)
 
-            console.log(res)
+                resolve(res)
+            })
         })
     }
 
-    update(id, data) {
-        const query = `UPDATE ${this.tableName} SET todo = '${data}' WHERE id = ${id}`
-        this.database.query(query, (err, res) => {
+    update(id = 1, data = { todo: 'Empty object' }) {
+        return new Promise((resolve, reject) => {
+            const query = `UPDATE ${this.tableName} SET todo = '${data.todo}' WHERE id = ${id}`
+            this.database.query(query, (err, res) => {
+                if (err) return reject(err)
+
+                resolve(res)
+            })
+        })
+    }
+
+    close() {
+        this.database.end((err) => {
             if (err) throw err
 
-            console.log(res)
+            console.log('MySQL database closed!')
         })
     }
 }
