@@ -49,6 +49,9 @@ async function asyncCall() {
                 flag = false
                 break
         }
+
+        // Reset it value set's the id to the last value
+        await database.resetIdValue()
     }
 
     database.close()

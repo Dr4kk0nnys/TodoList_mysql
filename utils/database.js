@@ -92,6 +92,35 @@ class Database {
             console.log('MySQL database closed!')
         })
     }
+
+    resetIdValue() {
+        return new Promise((resolve, reject) => {
+            const query = `SELECT * FROM ${this.tableName}`
+            this.database.query(query, (err, res) => {
+                if (err) reject(err)
+
+                const lastIndex = res.length - 1
+
+                if (lastIndex > 0) {
+                    const lastId = res[lastIndex].id
+
+                    this.database.query(`ALTER TABLE ${this.tableName} AUTO_INCREMENT = ${lastId}`, (err, res) => {
+                        if (err) return reject(err)
+
+                        resolve(res)
+                    })
+                } else {
+                    // If there is no items in the database
+                    // Set the AUTO_INCREMENT value to 0
+                    this.database.query(`ALTER TABLE ${this.tableName} AUTO_INCREMENT = 0`, (err, res) => {
+                        if (err) return reject(err)
+
+                        resolve(res)
+                    })
+                }
+            })
+        })
+    }
 }
 
 export default Database
